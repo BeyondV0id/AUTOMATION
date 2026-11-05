@@ -494,3 +494,4 @@ a logged-in interactive session. On a headless machine, schedule
 | `AGENTS.md` | Agent rules and source-of-truth map |
 | `.opencode/skills/job-search/SKILL.md` | Slash-command rules for OpenCode |
 | `config/profile.example.json` | Shape of a verified profile |
+# AUTOMATION
