@@ -537,7 +537,7 @@ scripts/
   google.py                    Google token status / refresh
   push_tracker.py              push tracker to Google Sheets
   browser_smoke.py             prove a browser backend works
-tests/                         141 tests: sources, matching, tailoring,
+tests/                         169 tests: sources, matching, tailoring,
                                PDF/ATS, posting guard, apply, browser,
                                outreach, sync
 ```
@@ -569,7 +569,7 @@ Observed on 2026-11-05:
 - No local LaTeX engine is installed; compilation goes through LaTeX.to.
 - `python scripts/doctor.py` reports 13 ok, 2 warn (app password missing, no
   applications yet), 1 missing (`profile.json`).
-- **141 tests pass.**
+- **169 tests pass.**
 - Playwright and ego lite are both available. The configured backend is
   Playwright.
 - The Google Workspace MCP token is valid; the Sheets tracker is reachable.

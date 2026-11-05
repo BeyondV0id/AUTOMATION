@@ -82,7 +82,7 @@ Checked on 2026-11-05 with `python scripts/doctor.py`:
 | Google Sheets tracker | configured, token valid |
 | Browser backends | Playwright installed; ego lite detected |
 | Local LaTeX engine | none; compilation uses LaTeX.to |
-| Tests | **141 passing** |
+| Tests | **169 passing** |
 
 Scoring, tailoring, form filling and resume generation stay blocked until a
 reviewed `data/resume/profile.json` exists. Discovery and tracking work today.

@@ -319,7 +319,7 @@ python scripts/doctor.py                  # config, DB, tokens, browsers
 python scripts/status.py                  # tracker counts
 python scripts/google.py status           # OAuth token health
 python scripts/browser_smoke.py --url https://example.com
-python -m pytest -q                       # 141 tests
+python -m pytest -q                       # 169 tests
 ```
 
 If a source is blocked, the run reports it and continues. Naukri and HiringCafe
