@@ -31,6 +31,14 @@ OFF_TOPIC = {
 
 REMOTE_WORDS = ("remote", "work from home", "wfh", "anywhere", "worldwide", "distributed")
 
+# "REMOTE (US)" is not remote for someone in India. Only an unqualified remote,
+# or one that names India or the world, is open to this candidate.
+REMOTE_LOCKED = re.compile(
+    r"remote\s*\(\s*(?:us|usa|u\.s\.|united states|canada|uk|united kingdom|eu|europe|"
+    r"emea|latam|apac|australia|germany|netherlands|singapore|japan)\b",
+    re.I,
+)
+
 # Where the candidate can actually take a job without a visa. Used only to
 # demote, never to hide: a great role abroad stays visible, just lower.
 INDIA_WORDS = (
@@ -131,9 +139,12 @@ def _location_score(job: dict[str, Any], profile: dict[str, Any]) -> tuple[float
     wanted = [str(x).lower() for x in (preferences.get("locations") or [])]
     remote_ok = bool(preferences.get("remote", True))
     location = (job.get("location") or "").lower()
-    is_remote = bool(job.get("remote")) or any(word in location for word in REMOTE_WORDS)
+    locked = bool(REMOTE_LOCKED.search(location))
+    is_remote = (bool(job.get("remote")) or any(word in location for word in REMOTE_WORDS)) and not locked
     if is_remote and remote_ok:
         return WEIGHTS["location"], "remote"
+    if locked:
+        return WEIGHTS["location"] * 0.15, "remote, but locked to another region"
     if wanted and any(place in location for place in wanted):
         return WEIGHTS["location"], "target location"
     if any(word in location for word in INDIA_WORDS):

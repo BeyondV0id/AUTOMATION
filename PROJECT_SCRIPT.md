@@ -30,7 +30,7 @@ optionally rewrite resume wording, but every rewrite is checked against
         ▼                                            ▼
 ┌──────────────────┐                     ┌────────────────────────┐
 │ JOB DISCOVERY    │                     │ RESUME GENERATION      │
-│ 11 source types  │                     │ LaTeX variants         │
+│ 12 source types  │                     │ LaTeX variants         │
 └────────┬─────────┘                     └───────────┬────────────┘
          │ score (rules, 0-100)                      │
          ▼                                           ▼
@@ -77,7 +77,7 @@ optionally rewrite resume wording, but every rewrite is checked against
 
 `run.py` → `resume_pipeline/discover.py`
 
-Eleven source types, all public and unauthenticated:
+Twelve source types, all public and unauthenticated:
 
 | Source | Module | How it is read |
 | --- | --- | --- |
@@ -88,6 +88,7 @@ Eleven source types, all public and unauthenticated:
 | Internshala | `source_internshala.py` | Server-rendered internship categories |
 | Naukri | `source_naukri.py` | Playwright-driven visible Chromium |
 | GiveMeAFuckingJ\*b | `source_gmafj.py` | Static catalogue JSON, filtered locally |
+| Hacker News | `source_hn.py` | Algolia mirror of the monthly "Who is hiring?" thread |
 | HiringCafe | `source_hiringcafe.py` | Next.js data route through Chromium |
 | engg.space | `source_engg.py` | Public MCP server, `search_jobs` over JSON-RPC |
 | Y Combinator | `source_yc.py` | `yc-oss` mirror + public YC company pages |
@@ -111,6 +112,9 @@ Supporting modules:
 - `source_gmafj.py` — reads the static catalogue, filters by keyword, country
   and age, then fetches detail chunks. The site has no company field, so the
   employer is inferred from the apply URL host.
+- `source_hn.py` — finds the current `whoishiring` thread through Algolia and
+  parses one top-level comment per role. Free text, so missing fields stay
+  empty rather than being guessed.
 - `source_hiringcafe.py` — boots Chromium past Cloudflare, reads the Next.js
   `buildId`, then calls the `classic.json` data route. Hits carry company,
   location, seniority, technical tools, requirements and the employer's apply
@@ -414,6 +418,7 @@ python -m resume_pipeline.compile --all --local
 python run.py
 python run.py --fast
 python run.py --no-browser
+python run.py --no-hn
 python run.py --min-score 60
 
 # Status and diagnostics
@@ -466,6 +471,7 @@ resume_pipeline/
   source_naukri.py             Naukri via visible Playwright browser
   source_engg.py               engg.space MCP search
   source_gmafj.py              GiveMeAFuckingJ*b static catalogue
+  source_hn.py                 Hacker News "Who is hiring?" thread
   source_hiringcafe.py         HiringCafe Next.js data route
   match.py                     rule-based 0-100 scoring
   level.py                     seniority detection from title and description

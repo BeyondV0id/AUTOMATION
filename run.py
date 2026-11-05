@@ -42,6 +42,7 @@ def main() -> int:
     parser.add_argument("--no-naukri", action="store_true", help="Skip Naukri (the browser source)")
     parser.add_argument("--no-gmafj", action="store_true", help="Skip GiveMeAFuckingJ*b")
     parser.add_argument("--no-hiringcafe", action="store_true", help="Skip HiringCafe (the browser source)")
+    parser.add_argument("--no-hn", action="store_true", help="Skip Hacker News Who is hiring")
     parser.add_argument("--no-browser", action="store_true", help="Skip every source that needs a browser")
     parser.add_argument("--no-collect", action="store_true", help="Skip contact address collection")
     parser.add_argument("--collect-pages", action="store_true", help="Also read job and employer pages for addresses (slower)")
@@ -69,6 +70,7 @@ def main() -> int:
         ("--no-naukri", args.no_naukri),
         ("--no-gmafj", args.no_gmafj),
         ("--no-hiringcafe", args.no_hiringcafe),
+        ("--no-hn", args.no_hn),
         ("--no-browser", args.no_browser),
     ):
         if enabled and flag not in discover_args:

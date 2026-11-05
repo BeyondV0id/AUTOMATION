@@ -1,16 +1,24 @@
 # Public feeds used by the local discovery command. Add employer board URLs as needed.
+# Fresher and internship terms come first: this profile is a 2027 graduate, so
+# an experienced role is noise even when the title looks like a match.
 keywords = [
+    "intern",
+    "internship",
+    "fresher",
+    "graduate",
+    "trainee",
+    "entry level",
+    "junior",
     "backend",
     "software engineer",
     "software development",
+    "full stack",
+    "frontend",
+    "web development",
+    "python",
     "machine learning",
     "AI engineer",
-    "python",
-    "data science",
     "data engineer",
-    "full stack",
-    "web development",
-    "intern",
 ]
 locations = []
 remote = true
@@ -26,12 +34,21 @@ engg = true
 naukri = true
 # GiveMeAFuckingJ*b publishes its catalogue as static JSON: no browser, no key.
 gmafj = true
+# Hacker News "Who is hiring?" is where startup founders post directly.
+hn = true
 # HiringCafe is behind Cloudflare and needs a visible browser, like Naukri.
 hiringcafe = true
 
 # LinkedIn's logged-out public search. No account or cookie is used.
 [linkedin]
-keywords = ["software engineer", "backend engineer", "machine learning engineer", "python developer"]
+keywords = [
+    "software engineer intern",
+    "software developer fresher",
+    "backend developer fresher",
+    "python developer intern",
+    "software engineer",
+    "backend engineer",
+]
 location = "India"
 max_pages = 2
 
@@ -43,28 +60,35 @@ categories = [
     "machine-learning-internship",
     "web-development-internship",
     "data-science-internship",
+    "full-stack-development-internship",
+    "react-js-internship",
+    "node-js-internship",
 ]
 max_pages = 1
 
 # engg.space MCP: read-only, no key. https://www.engg.space/mcp
+# max_years = 1 keeps two-year-plus postings out at the source instead of
+# paying for them and filtering later. Its `level` filter returns nothing, so
+# only max_years is used.
 [engg]
 limit = 25
 posted_within_days = 30
+max_years = 1
 queries = [
-    { query = "backend engineer India" },
-    { query = "machine learning engineer India" },
-    { query = "data engineer India" },
-    { query = "full stack engineer India" },
+    { query = "software engineer intern India" },
+    { query = "fresher software developer India" },
+    { query = "graduate engineer trainee India" },
     { query = "backend developer India" },
-    { query = "python engineer India" },
-    { query = "ai engineer remote" },
-    { query = "software engineer", location = "Bengaluru", level = "early" },
+    { query = "full stack developer India" },
+    { query = "python developer India" },
+    { query = "software engineer India" },
+    { query = "software engineer remote" },
 ]
 
 # Naukri renders results with JavaScript. This source drives Chromium through
 # Playwright; headful = true is required, otherwise Naukri returns Access Denied.
 [naukri]
-keywords = ["software engineer", "backend developer", "machine learning engineer"]
+keywords = ["software developer fresher", "software engineer intern", "backend developer", "python developer"]
 location = ""
 max_pages = 1
 headful = true
@@ -72,7 +96,7 @@ wait_ms = 6000
 
 # GiveMeAFuckingJ*b: static catalogue, filtered locally before details are read.
 [gmafj]
-keywords = ["software engineer", "backend", "machine learning", "python", "data engineer", "full stack", "developer"]
+keywords = ["intern", "fresher", "software engineer", "backend", "python", "full stack", "developer"]
 countries = ["IN"]
 remote = true
 days_old = 45
@@ -80,7 +104,7 @@ max_jobs = 25
 
 # HiringCafe: Next.js data route behind Cloudflare, read through Chromium.
 [hiringcafe]
-queries = ["backend engineer", "software engineer", "machine learning engineer", "python developer"]
+queries = ["software engineer intern", "fresher software developer", "backend developer", "python developer"]
 location = "India"
 days_old = 7
 max_pages = 1
@@ -88,11 +112,20 @@ headful = true
 wait_ms = 9000
 max_jobs = 80
 
+# Hacker News "Ask HN: Who is hiring?" through the Algolia mirror. Every
+# top-level comment in the monthly thread is a startup posting. No key, no
+# browser, and the thread is where early-stage companies hire first.
+[hn]
+keywords = ["engineer", "developer", "intern", "backend", "frontend", "full stack", "python", "data"]
+max_comments = 400
+days_old = 40
+remote = false
+
 # Y Combinator hiring companies, from the public yc-oss mirror.
 # (yc-oss only publishes company records; postings are read from company pages.)
 [yc]
 enabled = true
-max_pages = 12
+max_pages = 40
 years_back = 2
 regions = ["India", "Fully Remote"]
 

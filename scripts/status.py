@@ -38,29 +38,38 @@ def show_counts(conn: sqlite3.Connection) -> None:
         pass
 
 
-def show_top(conn: sqlite3.Connection, limit: int, min_score: float | None) -> None:
+def show_top(conn: sqlite3.Connection, limit: int, min_score: float | None, level: str | None = None) -> None:
     query = (
-        "SELECT id, company, title, location, source, status, match_score FROM jobs "
+        "SELECT id, company, title, location, source, status, match_score, level, years_required FROM jobs "
         "WHERE status IN ('new', 'review')"
     )
     params: list[object] = []
     if min_score is not None:
         query += " AND COALESCE(match_score, 0) >= ?"
         params.append(min_score)
-    query += " ORDER BY COALESCE(match_score, -1) DESC, discovered_at DESC LIMIT ?"
+    if level:
+        wanted = [item.strip().lower() for item in level.split(",") if item.strip()]
+        query += f" AND level IN ({','.join('?' * len(wanted))})"
+        params += wanted
+    # Internships and fresher roles first, then the rest by score.
+    query += (
+        " ORDER BY CASE level WHEN 'internship' THEN 0 WHEN 'fresher' THEN 1 WHEN 'junior' THEN 2 "
+        "ELSE 3 END, COALESCE(match_score, -1) DESC, discovered_at DESC LIMIT ?"
+    )
     params.append(limit)
 
     rows = conn.execute(query, params).fetchall()
     if not rows:
         print("Nothing pending. Run `python run.py`.")
         return
-    print(f"{'SCORE':>5}  {'COMPANY':26} {'TITLE':42} {'LOCATION':18} {'SOURCE':12} ID")
-    print("-" * 130)
+    print(f"{'SCORE':>5}  {'LEVEL':10} {'COMPANY':26} {'TITLE':42} {'LOCATION':18} {'SOURCE':12} ID")
+    print("-" * 140)
     for row in rows:
         score = f"{round(row['match_score'])}" if row["match_score"] is not None else "-"
         print(
-            f"{score:>5}  {(row['company'] or '')[:26]:26} {(row['title'] or '')[:42]:42} "
-            f"{(row['location'] or '')[:18]:18} {(row['source'] or '')[:12]:12} {row['id']}"
+            f"{score:>5}  {(row['level'] or '-'):10} {(row['company'] or '')[:26]:26} "
+            f"{(row['title'] or '')[:42]:42} {(row['location'] or '')[:18]:18} "
+            f"{(row['source'] or '')[:12]:12} {row['id']}"
         )
 
 
@@ -87,6 +96,7 @@ def main() -> int:
     parser.add_argument("--top", type=int, metavar="N", help="list N pending jobs by score")
     parser.add_argument("--find", metavar="TEXT", help="find a job id by company, title, or URL")
     parser.add_argument("--min-score", type=float)
+    parser.add_argument("--level", help="comma list: internship,fresher,junior,mid,senior,unknown")
     args = parser.parse_args()
 
     conn = connect()
@@ -94,7 +104,7 @@ def main() -> int:
         if args.find:
             show_find(conn, args.find)
         elif args.top:
-            show_top(conn, args.top, args.min_score)
+            show_top(conn, args.top, args.min_score, args.level)
         else:
             show_counts(conn)
     finally:

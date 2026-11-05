@@ -30,6 +30,9 @@ COLUMNS = {
     "missing_skills": "TEXT",
     "posted_at": "TEXT",
     "skills": "TEXT",
+    "level": "TEXT",
+    "years_required": "INTEGER",
+    "eligible": "INTEGER",
 }
 
 
@@ -208,6 +211,19 @@ def fetch_sources(
         except Exception as exc:
             log(f"hiringcafe: failed ({exc})")
 
+    if use_hn and sources.get("hn"):
+        section = config.get("hn") or {}
+        try:
+            jobs += discover_hn(
+                keywords=[str(item) for item in section.get("keywords") or []],
+                max_comments=int(section.get("max_comments", 400)),
+                days_old=int(section.get("days_old", 40)),
+                remote_only=bool(section.get("remote", False)),
+                log=log,
+            )
+        except Exception as exc:
+            log(f"hn: failed ({exc})")
+
     yc_config = config.get("yc") or {}
     if use_yc and yc_config.get("enabled", True):
         jobs += discover_yc(
@@ -231,18 +247,21 @@ def upsert(connection: sqlite3.Connection, jobs: list[dict], now: str) -> int:
             continue
         connection.execute(
             "INSERT INTO jobs (id, source, company, title, location, url, description, discovered_at, status, "
-            "match_score, match_reason, missing_skills, posted_at, skills) "
+            "match_score, match_reason, missing_skills, posted_at, skills, level, years_required, eligible) "
             "VALUES (?, ?, ?, ?, ?, ?, ?, ?, "
-            "COALESCE((SELECT status FROM jobs WHERE id = ?), 'new'), ?, ?, ?, ?, ?) "
+            "COALESCE((SELECT status FROM jobs WHERE id = ?), 'new'), ?, ?, ?, ?, ?, ?, ?, ?) "
             "ON CONFLICT(id) DO UPDATE SET "
             "match_score = excluded.match_score, match_reason = excluded.match_reason, "
             "missing_skills = excluded.missing_skills, skills = excluded.skills, "
+            "level = excluded.level, years_required = excluded.years_required, "
+            "eligible = excluded.eligible, "
             "description = CASE WHEN excluded.description <> '' THEN excluded.description ELSE jobs.description END",
             (
                 job["id"], job.get("source", ""), job.get("company", ""), job.get("title", ""),
                 job.get("location", ""), job.get("url", ""), job.get("description", ""), now, job["id"],
                 job.get("match_score"), job.get("match_reason", ""), job.get("missing", ""),
                 job.get("posted_at"), json.dumps(job.get("skills") or []),
+                job.get("level", ""), job.get("years_required"), int(bool(job.get("eligible"))),
             ),
         )
         accepted += 1
@@ -262,6 +281,7 @@ def main() -> None:
     parser.add_argument("--no-naukri", action="store_true", help="Skip Naukri (the browser source)")
     parser.add_argument("--no-gmafj", action="store_true", help="Skip GiveMeAFuckingJ*b")
     parser.add_argument("--no-hiringcafe", action="store_true", help="Skip HiringCafe (the browser source)")
+    parser.add_argument("--no-hn", action="store_true", help="Skip Hacker News Who is hiring")
     parser.add_argument("--no-browser", action="store_true", help="Skip every source that needs a browser")
     parser.add_argument("--quiet", action="store_true")
     args = parser.parse_args()
@@ -285,6 +305,7 @@ def main() -> None:
             use_naukri=not (args.no_naukri or args.no_browser),
             use_gmafj=not args.no_gmafj,
             use_hiringcafe=not (args.no_hiringcafe or args.no_browser),
+            use_hn=not args.no_hn,
         )
     except Exception as exc:
         REPORTS.mkdir(exist_ok=True)
@@ -304,6 +325,9 @@ def main() -> None:
         job["match_score"] = scored["score"]
         job["match_reason"] = scored["reason"]
         job["missing"] = scored["missing"]
+        job["level"] = scored["level"]
+        job["years_required"] = scored["years_required"]
+        job["eligible"] = scored["eligible"]
         if args.min_score is not None and job["match_score"] is not None and job["match_score"] < args.min_score:
             continue
         accepted += upsert(connection, [job], now)

@@ -144,6 +144,7 @@ python run.py                 # all sources, contacts, digest, Excel
 python run.py --fast          # public feeds only
 python run.py --no-browser    # skip Naukri and HiringCafe
 python run.py --no-naukri     # keep HiringCafe only
+python run.py --no-hn         # skip the Hacker News thread
 python run.py --min-score 60  # keep only strong matches in the digest
 python run.py --collect-pages # also read employer pages for contact addresses
 ```
@@ -151,7 +152,8 @@ python run.py --collect-pages # also read employer pages for contact addresses
 Each run:
 
 1. Collects jobs from the sources below.
-2. Scores each job locally with rules. No API call, no model, no tokens.
+2. Scores each job locally with rules. Internships and fresher roles sort
+   first in the digest and the tracker. No API call, no model, no tokens.
 3. Collects contact addresses from posting text.
 4. Writes `reports/job-digest-YYYY-MM-DD.md`.
 5. Rewrites `data/jobs.xlsx`, sorted by match score.
@@ -162,7 +164,7 @@ sheet never overwrites your tracking.
 
 ## Job sources
 
-Eleven source types, all public and unauthenticated:
+Twelve source types, all public and unauthenticated:
 
 | Source | Access | Browser? | Notes |
 | --- | --- | --- | --- |
@@ -173,6 +175,7 @@ Eleven source types, all public and unauthenticated:
 | Internshala | Server-rendered category pages | No | Internships; stipend and duration |
 | Naukri | Rendered Chromium page | **Yes, headful** | Headless gets "Access Denied" |
 | GiveMeAFuckingJ\*b | Static JSON catalogue (`/jobs/index.txt`, `/jobs/<chunk>.json`) | No | Catalogue lags about a month |
+| Hacker News | Algolia mirror of the monthly "Who is hiring?" thread | No | Startup founders post directly; free-text comments |
 | HiringCafe | Next.js `classic.json` data route through Chromium | **Yes, headful** | Cloudflare challenge |
 | engg.space | Public **MCP** server, `search_jobs` over JSON-RPC | No | Returns employer apply URLs |
 | Y Combinator | `yc-oss` company mirror + public YC company pages | No | Mirror has companies, not postings |
@@ -222,6 +225,7 @@ python scripts/status.py --top 15
 python scripts/status.py --find acme
 python scripts/rank.py                     # re-score the backlog, show top 20
 python scripts/rank.py --level internship,fresher --min-score 50
+python scripts/rank.py --source hn --top 20
 python scripts/rank.py --explain <job-id>
 python -m resume_pipeline.discover --config config/jobs.toml
 python -m resume_pipeline.digest

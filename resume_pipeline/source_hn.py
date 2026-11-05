@@ -94,6 +94,27 @@ def _from_sentence(first_line: str) -> tuple[str, str, str]:
     return company, title, location
 
 
+def _from_fields(text: str) -> tuple[str, str, str]:
+    """Read the "**Company:** Acme" label block some posters use."""
+    found: dict[str, str] = {}
+    for line in text.splitlines()[:8]:
+        match = re.match(
+            r"^[\s*_>-]*(company|role|title|position|location|where)[\s*_]*[:\-]\s*(.+)$",
+            line,
+            re.I,
+        )
+        if not match:
+            continue
+        key = match.group(1).lower()
+        value = match.group(2).strip(" *_")
+        if key in found or not value:
+            continue
+        found[key] = value[:90]
+    company = found.get("company", "")
+    role = found.get("role") or found.get("title") or found.get("position") or ""
+    return company, role, found.get("location") or found.get("where") or ""
+
+
 def parse_comment(raw_html: str) -> dict[str, Any] | None:
     """One top-level HN comment -> a job dict, or None when it is not a job."""
     text = clean_text(raw_html)
@@ -102,6 +123,8 @@ def parse_comment(raw_html: str) -> dict[str, Any] | None:
     first = text.splitlines()[0]
     parts = _segments(first)
     company, role, location = _pick(parts) if len(parts) > 1 else ("", "", "")
+    if not role:
+        company, role, location = _from_fields(text)
     if not role:
         company, role, location = _from_sentence(first)
     if not role:

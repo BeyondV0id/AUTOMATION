@@ -24,7 +24,7 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
-from resume_pipeline.match import score_job  # noqa: E402
+from resume_pipeline.match import INDIA_WORDS, REMOTE_LOCKED, score_job  # noqa: E402
 
 DB = ROOT / "data" / "applications.db"
 PROFILES = (ROOT / "data" / "resume" / "profile.json", ROOT / "config" / "profile.json")
@@ -106,20 +106,46 @@ def rescore(conn: sqlite3.Connection, profile: dict, write: bool = True) -> list
 
 def select(results: list[dict[str, Any]], args: argparse.Namespace) -> list[dict[str, Any]]:
     wanted = {item.strip().lower() for item in (args.level or "").split(",") if item.strip()}
-    picked = []
+    sources = {item.strip().lower() for item in (getattr(args, "source", "") or "").split(",") if item.strip()}
+    priority = [
+        item.strip().lower()
+        for item in ("" if args.no_priority else (args.priority or "")).split(",")
+        if item.strip()
+    ]
+    picked: list[dict[str, Any]] = []
     for item in results:
         if wanted and item["level"] not in wanted:
             continue
+        if sources and item["source"] not in sources:
+            continue
         if args.remote_only and not any(word in item["location"].lower() for word in REMOTE_WORDS):
             continue
+        if args.open_to_india:
+            location = item["location"].lower()
+            locked = bool(REMOTE_LOCKED.search(location))
+            india = any(word in location for word in INDIA_WORDS)
+            open_remote = (
+                any(word in location for word in ("remote", "work from home", "anywhere", "worldwide", "wfh"))
+                and not locked
+            )
+            if not (india or open_remote):
+                continue
         if args.min_score is not None and (item["score"] or 0) < args.min_score:
             continue
         if args.max_years is not None and item["years_required"] is not None and item["years_required"] > args.max_years:
             continue
         picked.append(item)
-        if len(picked) >= args.top:
-            break
-    return picked
+
+    if priority:
+        rank = {name: index for index, name in enumerate(priority)}
+        fallback = len(rank)
+        picked.sort(
+            key=lambda item: (
+                rank.get(item["level"], fallback) if item["eligible"] else fallback + 1,
+                -(item["score"] or 0),
+            )
+        )
+    return picked[: args.top]
 
 
 def show(results: list[dict[str, Any]]) -> None:
@@ -163,7 +189,15 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--profile", type=Path, default=None)
     parser.add_argument("--top", type=int, default=20)
     parser.add_argument("--level", help="comma list: internship,fresher,junior,mid,senior,unknown")
+    parser.add_argument("--source", help="comma list of sources, for example hn,yc,internshala")
+    parser.add_argument(
+        "--priority",
+        default="internship,fresher,junior",
+        help="levels listed first, in this order (default: internship,fresher,junior)",
+    )
+    parser.add_argument("--no-priority", action="store_true", help="sort purely by score")
     parser.add_argument("--remote-only", action="store_true")
+    parser.add_argument("--open-to-india", action="store_true", help="India locations and worldwide-remote only")
     parser.add_argument("--min-score", type=float, default=None)
     parser.add_argument("--max-years", type=int, default=None, help="hide postings asking for more")
     parser.add_argument("--explain", metavar="JOB_ID")

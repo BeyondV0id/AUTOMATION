@@ -178,13 +178,36 @@ technical tools, requirements summary and the employer's apply URL.
 Disable either with its `[sources]` flag, `--no-naukri`, `--no-hiringcafe`,
 `--no-browser`, or `--fast`.
 
-### 3.5 MCP source
+### 3.5 Hacker News "Who is hiring?"
+
+| Property | Value |
+| --- | --- |
+| Thread search | `https://hn.algolia.com/api/v1/search_by_date?tags=story,author_whoishiring&hitsPerPage=24` |
+| Thread comments | `https://hn.algolia.com/api/v1/items/<thread_id>` |
+| Config | `[hn]` keywords, `max_comments`, `days_old`, `remote` |
+| Auth | None |
+| Browser | No |
+
+Every month the `whoishiring` account posts a thread and founders add one
+top-level comment per open role. `source_hn.py` finds the current thread, reads
+up to `max_comments` comments, and parses the common shapes:
+
+```text
+Acme | Backend Engineer | Remote (US) | https://acme.dev/jobs
+Acme is hiring a founding engineer in Bengaluru (on-site)
+**Company:** Acme  **Role:** Full-stack developer  **Location:** Remote
+```
+
+The comments are free text, so a field that is not present stays empty. Nothing
+is inferred. Turn the source off with `[sources].hn = false` or `--no-hn`.
+
+### 3.6 MCP source
 
 | Source | Endpoint | Config | Notes |
 | --- | --- | --- | --- |
 | engg.space | `https://www.engg.space/mcp` | `[engg]` `limit`, `posted_within_days`, `queries` | JSON-RPC `initialize` + `tools/call search_jobs`; returns employer apply URLs |
 
-### 3.6 Y Combinator
+### 3.7 Y Combinator
 
 | Piece | Endpoint | Notes |
 | --- | --- | --- |
@@ -196,7 +219,7 @@ Fully Remote, last 2 years), reads a bounded number of company pages per run,
 caches them, and spreads the rest across later runs. Paused postings are
 skipped.
 
-### 3.7 ATS boards
+### 3.8 ATS boards
 
 Configured in `config/jobs.toml`:
 
@@ -215,7 +238,7 @@ ashby = ["linear"]
 
 `source_ats.py` normalizes all three and strips HTML from descriptions.
 
-### 3.8 Source summary
+### 3.9 Source summary
 
 | Source | Type | Auth | Browser | Current rows |
 | --- | --- | --- | --- | --- |
@@ -226,6 +249,7 @@ ashby = ["linear"]
 | Internshala | HTML categories | None | No | 182 |
 | Naukri | Rendered page | None | **Yes** | 60 |
 | GiveMeAFuckingJ\*b | Static JSON | None | No | 0 |
+| Hacker News | Algolia JSON | None | No | 0 |
 | HiringCafe | Next.js data route | None | **Yes** | 0 |
 | engg.space | MCP | None | No | 91 |
 | Y Combinator | Mirror + pages | None | No | 8 |
