@@ -35,3 +35,10 @@ tmp_probe.py
 .env
 .env.*
 *.log
+
+# Personal identity, contacts and resume source
+config/outreach.toml
+config/answers.toml
+config/sync.toml
+resumes/g_harsha_resume.tex
+resumes/g_harsha_resume.pdf

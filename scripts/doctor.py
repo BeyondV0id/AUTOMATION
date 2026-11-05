@@ -81,7 +81,7 @@ def check_google() -> None:
         add(MISSING, "gmail address", "set [gmail].address in config/sync.toml")
         return
 
-    add(OK if address == "the.harsha.mail@gmail.com" else WARN, "gmail address", address)
+    add(OK if "@" in address else WARN, "gmail address", address)
     add(OK if spreadsheet else WARN, "sheets tracker", spreadsheet or "no [sheets].spreadsheet_id")
 
     token_file = TOKENS / f"{address}.json"

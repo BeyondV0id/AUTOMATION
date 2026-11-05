@@ -85,7 +85,8 @@ def _resume_for(job_id: str | None) -> Path | None:
             pdfs = sorted(folder.rglob("*.pdf"))
             if pdfs:
                 return pdfs[0]
-    for candidate in (RESUMES / "generated" / "master.pdf", RESUMES / "g_harsha_resume.pdf"):
+    candidates = [RESUMES / "generated" / "master.pdf", *sorted(RESUMES.glob("*.pdf"))]
+    for candidate in candidates:
         if candidate.exists():
             return candidate
     fallback = sorted((DATA / "resume").glob("*.pdf"))

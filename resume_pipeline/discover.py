@@ -14,6 +14,7 @@ from .match import score_job
 from .source_ats import discover_ats
 from .source_engg import discover_engg
 from .source_gmafj import discover_gmafj
+from .source_hn import discover_hn
 from .source_hiringcafe import discover_hiringcafe
 from .source_internshala import discover_internshala
 from .source_linkedin import discover_linkedin
@@ -119,6 +120,7 @@ def fetch_sources(
     use_engg: bool = True,
     use_gmafj: bool = True,
     use_hiringcafe: bool = True,
+    use_hn: bool = True,
 ) -> list[dict]:
     sources = config.get("sources") or {}
     jobs = fetch_feed_sources(sources)

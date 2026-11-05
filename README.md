@@ -116,7 +116,7 @@ Chromium, with no document upload).
 
 ```powershell
 # 1. Build a draft profile from the real resume
-python -m resume_pipeline.ingest --resume "data/resume/g_harsha_resume.pdf"
+python -m resume_pipeline.ingest --resume "C:\path\to\resume.pdf"
 
 # 2. Review data/resume/profile.draft.json, fill in real experience, skills,
 #    bullets and education, then save it as data/resume/profile.json.

@@ -77,7 +77,7 @@ instead of landing on an aggregator redirect.
 | Package | `workspace-mcp` via `uvx` |
 | Transport | Local stdio MCP server |
 | Scopes | `gmail:drafts`, `sheets:full` |
-| Account | `the.harsha.mail@gmail.com` |
+| Account | configured Gmail account |
 | Token store | `~/.config/opencode/google-credentials/` |
 | Host config | `~/.config/opencode/opencode.jsonc` (outside this repo) |
 | Used by | OpenCode host tools, and `scripts/push_tracker.py` reuses the token |

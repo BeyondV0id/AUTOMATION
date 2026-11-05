@@ -18,13 +18,13 @@ from resume_pipeline.outreach.compose import (
 
 def cfg(**overrides) -> OutreachConfig:
     values = dict(
-        sender_name="Harsha Vardhan Gandepalli",
-        sender_email="harsha@example.com",
+        sender_name="Alex Doe",
+        sender_email="alex@example.com",
         headline="a backend and ML engineer",
-        phone="+91 90000 00000",
+        phone="+1 555 0100",
         location="Hyderabad, India",
-        linkedin="https://linkedin.com/in/harsha",
-        github="https://github.com/harsha",
+        linkedin="https://linkedin.com/in/alex",
+        github="https://github.com/alex",
         skills=["Python", "Django", "PostgreSQL"],
         summary="I build backend services in Python",
         availability="I can start within 30 days",

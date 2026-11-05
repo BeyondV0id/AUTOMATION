@@ -13,6 +13,7 @@ from __future__ import annotations
 import argparse
 import json
 import sys
+import tomllib
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -112,10 +113,19 @@ def refresh(address: str) -> int:
     return 0
 
 
+def default_address() -> str:
+    """Read the account from config/sync.toml instead of hard-coding one."""
+    config = Path(__file__).resolve().parents[1] / "config" / "sync.toml"
+    if not config.exists():
+        return ""
+    data = tomllib.loads(config.read_text(encoding="utf-8"))
+    return str((data.get("gmail") or {}).get("address") or "")
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("action", choices=["status", "refresh", "scopes"], nargs="?", default="status")
-    parser.add_argument("--email", default="the.harsha.mail@gmail.com")
+    parser.add_argument("--email", default=default_address())
     args = parser.parse_args(argv)
     return {"status": status, "refresh": refresh, "scopes": scopes}[args.action](args.email)
 
