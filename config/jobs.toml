@@ -1,0 +1,103 @@
+# Public feeds used by the local discovery command. Add employer board URLs as needed.
+keywords = [
+    "backend",
+    "software engineer",
+    "software development",
+    "machine learning",
+    "AI engineer",
+    "python",
+    "data science",
+    "data engineer",
+    "full stack",
+    "web development",
+    "intern",
+]
+locations = []
+remote = true
+
+[sources]
+arbeitnow = true
+remotive = true
+himalayas = true
+linkedin = true
+internshala = true
+engg = true
+# Naukri needs a visible browser window. Set to false for a silent daily run.
+naukri = true
+# GiveMeAFuckingJ*b publishes its catalogue as static JSON: no browser, no key.
+gmafj = true
+# HiringCafe is behind Cloudflare and needs a visible browser, like Naukri.
+hiringcafe = true
+
+# LinkedIn's logged-out public search. No account or cookie is used.
+[linkedin]
+keywords = ["software engineer", "backend engineer", "machine learning engineer", "python developer"]
+location = "India"
+max_pages = 2
+
+# Internshala server-rendered category pages.
+[internshala]
+categories = [
+    "software-development-internship",
+    "python-django-internship",
+    "machine-learning-internship",
+    "web-development-internship",
+    "data-science-internship",
+]
+max_pages = 1
+
+# engg.space MCP: read-only, no key. https://www.engg.space/mcp
+[engg]
+limit = 25
+posted_within_days = 30
+queries = [
+    { query = "backend engineer India" },
+    { query = "machine learning engineer India" },
+    { query = "data engineer India" },
+    { query = "full stack engineer India" },
+    { query = "backend developer India" },
+    { query = "python engineer India" },
+    { query = "ai engineer remote" },
+    { query = "software engineer", location = "Bengaluru", level = "early" },
+]
+
+# Naukri renders results with JavaScript. This source drives Chromium through
+# Playwright; headful = true is required, otherwise Naukri returns Access Denied.
+[naukri]
+keywords = ["software engineer", "backend developer", "machine learning engineer"]
+location = ""
+max_pages = 1
+headful = true
+wait_ms = 6000
+
+# GiveMeAFuckingJ*b: static catalogue, filtered locally before details are read.
+[gmafj]
+keywords = ["software engineer", "backend", "machine learning", "python", "data engineer", "full stack", "developer"]
+countries = ["IN"]
+remote = true
+days_old = 45
+max_jobs = 25
+
+# HiringCafe: Next.js data route behind Cloudflare, read through Chromium.
+[hiringcafe]
+queries = ["backend engineer", "software engineer", "machine learning engineer", "python developer"]
+location = "India"
+days_old = 7
+max_pages = 1
+headful = true
+wait_ms = 9000
+max_jobs = 80
+
+# Y Combinator hiring companies, from the public yc-oss mirror.
+# (yc-oss only publishes company records; postings are read from company pages.)
+[yc]
+enabled = true
+max_pages = 12
+years_back = 2
+regions = ["India", "Fully Remote"]
+
+# Public ATS boards. Add company board slugs, for example greenhouse = ["stripe", "figma"].
+[ats]
+greenhouse = []
+lever = []
+ashby = []

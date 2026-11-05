@@ -1,0 +1,13 @@
+# Copy to config/contacts.toml. Optional.
+#
+# `python -m resume_pipeline.outreach collect --fetch-pages` fills the contact
+# list in the database on its own. Use this file only for addresses you know
+# by hand, or to override what was scraped.
+#
+# An address is only used when the posting itself has none.
+
+[by_company]
+# "Acme Corp" = "careers@acme.com"
+
+[by_domain]
+# "acme.com" = "jobs@acme.com"

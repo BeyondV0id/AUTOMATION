@@ -1,0 +1,6 @@
+# Exact model IDs available in the current OpenCode environment.
+# These are selected by OpenCode/Codex, not called directly by this local package.
+primary = "openai/gpt-5.5"
+review = "google/antigravity-gemini-3.8-flash-medium"
+deep_review = "google/antigravity-claude-sonnet-4-6"
+coding = "opencode/gpt-5.3-codex"

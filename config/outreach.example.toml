@@ -1,0 +1,41 @@
+# Copy to config/outreach.toml. This file holds no secrets.
+#
+# Sending and Gmail drafts use the app password from the environment:
+#   $env:JOB_GMAIL_APP_PASSWORD = "the 16-character app password"
+# Create one at: Google Account -> Security -> 2-Step Verification -> App passwords
+# (2-Step Verification must be on. "Less secure apps" no longer exists.)
+
+[outreach.identity]
+name = "Your Name"
+email = "you@gmail.com"
+headline = "a backend and AI/ML engineer"
+phone = "+91 00000 00000"
+location = "Hyderabad, India"
+linkedin = "https://linkedin.com/in/you"
+github = "https://github.com/you"
+portfolio = ""
+# Optional lines. Leave empty and the sentence is dropped from the email.
+availability = "I can start within 30 days"
+summary = "I build backend services and data pipelines in Python, mostly Django and Postgres on AWS"
+# Only these are claimed in an email. Keep it to things you can defend in an interview.
+skills = ["Python", "Django", "PostgreSQL", "AWS", "Docker", "PyTorch"]
+
+[outreach.limits]
+# Gmail's hard cap for a free account is 500 recipients/day. Staying well under
+# it is what keeps the account healthy, not the cap itself.
+daily_limit = 20
+per_company_limit = 1
+delay_seconds = 20
+attach_resume = true
+
+# Override any built-in template. Available placeholders:
+#   {sender_name} {sender_email} {headline} {company} {title} {location}
+#   {summary_line} {skills_line} {skills_short} {availability_line}
+#   {contact_line} {links_line} {job_url}
+#
+# [outreach.templates.cold]
+# subject = "{sender_name} - {title} at {company}"
+# body = """Hi {company} team,
+#
+# ...
+# """

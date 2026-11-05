@@ -1,0 +1,35 @@
+{
+  "identity": {
+    "name": "",
+    "headline": "",
+    "email": "",
+    "phone": "",
+    "location": ""
+  },
+  "links": {
+    "linkedin": "",
+    "github": "",
+    "portfolio": ""
+  },
+  "summary": "",
+  "skills": {
+    "languages": [],
+    "backend": [],
+    "frontend": [],
+    "data_ml": [],
+    "cloud_devops": [],
+    "databases": [],
+    "tools": []
+  },
+  "experience": [],
+  "projects": [],
+  "education": [],
+  "certifications": [],
+  "preferences": {
+    "roles": ["Backend Developer", "Software Engineer", "AI/ML Engineer"],
+    "locations": [],
+    "remote": true,
+    "work_authorization": ""
+  },
+  "source_notes": "Every value above must be checked against the supplied resume before generation."
+}

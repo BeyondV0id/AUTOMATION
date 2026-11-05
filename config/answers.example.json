@@ -1,0 +1,31 @@
+{
+  "note": "Answers for application forms. Copy to config/answers.toml and fill real values.",
+  "answers": {
+    "first_name": "",
+    "last_name": "",
+    "email": "",
+    "phone": "",
+    "location": "",
+    "city": "",
+    "country": "",
+    "linkedin": "",
+    "github": "",
+    "portfolio": "",
+    "work_authorization": "Yes",
+    "requires_sponsorship": false,
+    "salary_expectation": "",
+    "notice_period": "",
+    "years_experience": "",
+    "pronouns": "",
+    "gender": "",
+    "veteran_status": "",
+    "disability_status": "",
+    "referral_source": "Company website",
+    "consent": true,
+    "newsletter": false
+  },
+  "questions": {
+    "notice period": "30 days",
+    "how did you hear": "Company careers page"
+  }
+}

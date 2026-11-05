@@ -1,0 +1,37 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+*.egg-info/
+
+# Local state and generated data
+data/applications.db
+data/applications.db-*
+data/jobs.xlsx
+data/cache/
+data/browser-profile*/
+data/naukri-profile*/
+data/tailoring/
+data/jobs/
+data/browser/
+data/resume/*.pdf
+data/resume/*.txt
+data/resume/*.json
+
+# Generated resumes and reports
+resumes/generated/
+resumes/*.pdf
+reports/*
+!reports/.gitkeep
+
+# Browser and TeX build caches
+.latexto-profile/
+.playwright-mcp/
+
+# Local scratch and secrets
+tmp_probe.py
+.env
+.env.*
+*.log

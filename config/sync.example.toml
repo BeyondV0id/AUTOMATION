@@ -1,0 +1,48 @@
+# Copy to config/sync.toml. Secrets stay in environment variables.
+#
+#   $env:JOB_GMAIL_APP_PASSWORD = "..."    # Google account -> Security -> App passwords
+#   $env:JOB_NOTION_TOKEN = "secret_..."   # notion.so/my-integrations
+
+[gmail]
+enabled = true
+address = "you@gmail.com"
+folder = "[Gmail]/All Mail"
+days = 21
+max_messages = 200
+# Minimum intent confidence before a status is changed automatically.
+auto_apply_threshold = 0.6
+# Minimum company-match score before an email is tied to a job.
+match_threshold = 0.45
+
+[notion]
+enabled = true
+# Create a database, then share it with your integration.
+database_id = ""
+# Publish everything, or only jobs you have actually applied to.
+include_all = false
+# Rename these to match your Notion database exactly.
+[notion.properties]
+title = "Name"
+company = "Company"
+role = "Role"
+status = "Status"
+score = "Score"
+location = "Location"
+url = "URL"
+applied = "Applied"
+
+[excel]
+enabled = true
+import_edits = true
+
+[smtp]
+# Used by resume_pipeline.outreach to save drafts and send. Same app password
+# as [gmail]. SMTP is what makes "save to Gmail Drafts" and attachments work
+# without a Google Cloud project.
+host = "smtp.gmail.com"
+port = 465
+imap_host = "imap.gmail.com"
+imap_port = 993
+drafts_folder = "[Gmail]/Drafts"
+# Shows in the From line. Falls back to the bare address when empty.
+display_name = ""

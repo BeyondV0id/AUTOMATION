@@ -1,0 +1,26 @@
+# Which browser drives automation. Read by resume_pipeline.browser.
+#
+# playwright  launches its own Chromium with data/browser-profile. It is the
+#             only backend that can see inside cross-origin iframes, so it is
+#             what form filling needs. Runs headless unless you say otherwise.
+# ego         drives the ego lite browser you are signed into, through the
+#             ego-browser CLI. You watch every click. One document at a time.
+# auto        playwright when it is installed, ego otherwise.
+
+[browser]
+backend = "playwright"
+
+# Only used by the playwright backend.
+headless = true
+slow_mo = 0
+profile_dir = ""
+timeout_ms = 45000
+
+# Only used by the ego backend.
+# One task space is reused for every call, so the tab survives between runs.
+ego_space = "job-automation"
+# Leave empty to use the default ego lite profile. Set a profile id such as
+# "Profile 3" only when a run must use a specific signed-in account.
+ego_profile = ""
+# Leave empty to find ego-browser.exe under Program Files automatically.
+ego_exe = ""
