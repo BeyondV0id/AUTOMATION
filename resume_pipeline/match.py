@@ -136,9 +136,11 @@ def _location_score(job: dict[str, Any], profile: dict[str, Any]) -> tuple[float
         return WEIGHTS["location"], "remote"
     if wanted and any(place in location for place in wanted):
         return WEIGHTS["location"], "target location"
+    if any(word in location for word in INDIA_WORDS):
+        return WEIGHTS["location"] * 0.9, "India"
     if not location:
         return WEIGHTS["location"] * 0.5, "location not listed"
-    return WEIGHTS["location"] * 0.4, "other location"
+    return WEIGHTS["location"] * 0.15, "outside India, no remote option"
 
 
 def level_of(job: dict[str, Any]) -> dict[str, Any]:

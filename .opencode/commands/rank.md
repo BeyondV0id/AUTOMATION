@@ -12,4 +12,5 @@ Rank the current backlog.
 
 Do not open every posting. This is triage from stored scores only. If every
 score is `-`, say that scoring had no profile to work with and point at
-`data/resume/profile.json`.
+`data/resume/profile.json`. Once the profile exists, re-score the backlog with
+`python scripts/rank.py`.
